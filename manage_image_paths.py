@@ -32,6 +32,7 @@ bl_info = {
 import bpy
 import os
 from shutil import copy2 as copyfile
+from time import time
 
 '''
 TODOs:
@@ -44,12 +45,12 @@ TODOs:
 class MIPProps(bpy.types.PropertyGroup):
     source = bpy.props.StringProperty(
         name="Source",
-        default="C:\\TexturesGreg",
+        default="",
         description="source")
 
     target = bpy.props.StringProperty(
         name="Target",
-        default="W:\\COMMERCIALS\\CastleMilkStout2015\\Assets\\Textures",
+        default="",
         description="target")
 
 
@@ -118,6 +119,7 @@ class MIPImagePathsPanel(bpy.types.Panel):
     bl_context = "scene"
 
     def draw(self, context):
+        print ("draw!", time())
         layout = self.layout
         images = get_images()
         props = context.scene.mip_props
