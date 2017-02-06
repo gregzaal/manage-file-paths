@@ -32,7 +32,6 @@ bl_info = {
 import bpy
 import os
 from shutil import copy2 as copyfile
-from time import time
 
 '''
 TODOs:
