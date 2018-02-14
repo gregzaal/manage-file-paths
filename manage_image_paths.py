@@ -17,12 +17,12 @@
 # END GPL LICENSE BLOCK #####
 
 bl_info = {
-    "name": "Manage Image Paths",
+    "name": "Manage File Paths",
     "description": ":)",
     "author": "Greg Zaal",
-    "version": (0, 1),
+    "version": (0, 2),
     "blender": (2, 74, 0),
-    "location": "Properties Editor > Scene > Image Paths panel",
+    "location": "Properties Editor > Scene > File Paths panel",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
@@ -35,13 +35,14 @@ from shutil import copy2 as copyfile
 
 '''
 TODOs:
+    Don't fetch image list or check for existance on every redraw, make refresh button (and maybe refresh automatically every so often with modal timer?)
     Find and replace individually
     Only if file doesn't exist
     Somehow automatically try fix paths based on history (stored in config)
     Reload images
 '''
 
-class MIPProps(bpy.types.PropertyGroup):
+class MFPProps(bpy.types.PropertyGroup):
     source = bpy.props.StringProperty(
         name="Source",
         default="",
@@ -61,7 +62,6 @@ def get_images():
                 images.append(i)
     return images
 
-
 def file_exists(path):
     if path.startswith('//'):  # os.path.exists only works with absolute paths
         path = bpy.path.abspath(path)
@@ -74,9 +74,9 @@ def all_rel_to_abs():
         if img.filepath.startswith('//'):
             img.filepath = bpy.path.abspath(img.filepath)
 
-class MIPFindReplace(bpy.types.Operator):
+class MFPFindReplace(bpy.types.Operator):
     """Tooltip"""  # TODO
-    bl_idname = "mip.find_replace"
+    bl_idname = "mfp.find_replace"
     bl_label = "Replace Source with Target"
 
     def execute(self, context):
@@ -88,9 +88,9 @@ class MIPFindReplace(bpy.types.Operator):
             img.filepath = img.filepath.replace(props.source, props.target)
         return {'FINISHED'}
 
-class MIPCopy(bpy.types.Operator):
+class MFPCopy(bpy.types.Operator):
     """Tooltip"""  # TODO
-    bl_idname = "mip.copy"
+    bl_idname = "mfp.copy"
     bl_label = "Copy Source to Target"
 
     def execute(self, context):
@@ -109,25 +109,27 @@ class MIPCopy(bpy.types.Operator):
                 copyfile (old_path, new_path)
         return {'FINISHED'}
 
-class MIPImagePathsPanel(bpy.types.Panel):
+class MFPImagePathsPanel(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
-    bl_label = "Image Paths"
+    bl_label = "File Paths"
     bl_idname = "OBJECT_PT_hello"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "scene"
 
     def draw(self, context):
+        # print ("draw!", time())
         layout = self.layout
         images = get_images()
+        caches = bpy.data.cache_files
         props = context.scene.mip_props
 
         col = layout.column(align=True)
         col.prop(props, 'source')
         col.prop(props, 'target')
         col.separator()
-        col.operator('mip.find_replace')
-        col.operator('mip.copy')
+        col.operator('mfp.find_replace')
+        col.operator('mfp.copy')
 
         col = layout.column()
         for img in images:
@@ -136,11 +138,19 @@ class MIPImagePathsPanel(bpy.types.Panel):
             i = 'FILE_TICK' if file_exists(img.filepath) else 'ERROR'
             row.label(text='', icon=i)
 
+        if caches:
+            col = layout.column()
+            for c in caches:
+                row = col.row(align=True)
+                row.prop(c, 'filepath', text=c.name)
+                i = 'FILE_TICK' if file_exists(c.filepath) else 'ERROR'
+                row.label(text='', icon=i)
+
 
 def register():
     bpy.utils.register_module(__name__)
 
-    bpy.types.Scene.mip_props = bpy.props.PointerProperty(type=MIPProps)
+    bpy.types.Scene.mip_props = bpy.props.PointerProperty(type=MFPProps)
 
 def unregister():
     del bpy.types.Scene.mip_props
