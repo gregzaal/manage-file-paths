@@ -46,12 +46,12 @@ class MFPProps(bpy.types.PropertyGroup):
     bl_idname = __package__
 
     source: bpy.props.StringProperty(
-        name="Source",
+        name="Find",
         default="",
         description="source")
 
     target: bpy.props.StringProperty(
-        name="Target",
+        name="Replace",
         default="",
         description="target")
 
@@ -80,12 +80,12 @@ def all_rel_to_abs():
 
 
 class MFP_OT_FindReplace(bpy.types.Operator):
-    """Tooltip"""  # TODO
+    """Replace the text specified in 'Find' with that in 'Replace'"""
     bl_idname = "mfp.find_replace"
-    bl_label = "Replace Source with Target"
+    bl_label = "Find & Replace"
+    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        all_rel_to_abs()
         props = context.scene.mfp_props
         images = get_images()
 
@@ -117,9 +117,7 @@ class MFP_OT_Copy(bpy.types.Operator):
 
 
 class MFP_PT_ImagePathsPanel(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
     bl_label = "File Paths"
-    bl_idname = "OBJECT_PT_hello"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "scene"
@@ -130,18 +128,11 @@ class MFP_PT_ImagePathsPanel(bpy.types.Panel):
         caches = bpy.data.cache_files
         props = context.scene.mfp_props
 
-        col = layout.column(align=True)
-        col.prop(props, 'source')
-        col.prop(props, 'target')
-        col.separator()
-        col.operator('mfp.find_replace')
-        col.operator('mfp.copy')
-
         col = layout.column()
         for img in images:
             row = col.row(align=True)
             row.prop(img, 'filepath', text=img.name)
-            i = 'FILE_TICK' if file_exists(img.filepath) else 'ERROR'
+            i = 'BLANK1' if file_exists(img.filepath) else 'LIBRARY_DATA_BROKEN'
             row.label(text='', icon=i)
 
         if caches:
@@ -149,15 +140,38 @@ class MFP_PT_ImagePathsPanel(bpy.types.Panel):
             for c in caches:
                 row = col.row(align=True)
                 row.prop(c, 'filepath', text=c.name)
-                i = 'FILE_TICK' if file_exists(c.filepath) else 'ERROR'
+                i = 'BLANK1' if file_exists(c.filepath) else 'LIBRARY_DATA_BROKEN'
                 row.label(text='', icon=i)
+
+        col = layout.column(align=True)
+        col.operator('file.find_missing_files')
+        col.operator('file.make_paths_relative')
+        col.operator('outliner.orphans_purge', text="Remove Unused")
+
+
+class MFP_PT_FindReplace(bpy.types.Panel):
+    bl_label = "Find & Replace"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "scene"
+    bl_parent_id = "MFP_PT_ImagePathsPanel"
+
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.mfp_props
+
+        col = layout.column(align=True)
+        col.prop(props, 'source')
+        col.prop(props, 'target')
+        col.separator()
+        col.operator('mfp.find_replace')
 
 
 classes = [
     MFPProps,
     MFP_OT_FindReplace,
-    MFP_OT_Copy,
     MFP_PT_ImagePathsPanel,
+    MFP_PT_FindReplace,
 ]
 
 
