@@ -20,14 +20,13 @@ bl_info = {
     "name": "Manage File Paths",
     "description": ":)",
     "author": "Greg Zaal",
-    "version": (0, 2),
-    "blender": (2, 74, 0),
+    "version": (0, 3),
+    "blender": (2, 91, 0),
     "location": "Properties Editor > Scene > File Paths panel",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
     "category": "Scene"}
-
 
 import bpy
 import os
@@ -42,13 +41,16 @@ TODOs:
     Reload images
 '''
 
+
 class MFPProps(bpy.types.PropertyGroup):
-    source = bpy.props.StringProperty(
+    bl_idname = __package__
+
+    source: bpy.props.StringProperty(
         name="Source",
         default="",
         description="source")
 
-    target = bpy.props.StringProperty(
+    target: bpy.props.StringProperty(
         name="Target",
         default="",
         description="target")
@@ -62,11 +64,13 @@ def get_images():
                 images.append(i)
     return images
 
+
 def file_exists(path):
     if path.startswith('//'):  # os.path.exists only works with absolute paths
         path = bpy.path.abspath(path)
 
     return os.path.exists(path)
+
 
 def all_rel_to_abs():
     images = get_images()
@@ -74,28 +78,30 @@ def all_rel_to_abs():
         if img.filepath.startswith('//'):
             img.filepath = bpy.path.abspath(img.filepath)
 
-class MFPFindReplace(bpy.types.Operator):
+
+class MFP_OT_FindReplace(bpy.types.Operator):
     """Tooltip"""  # TODO
     bl_idname = "mfp.find_replace"
     bl_label = "Replace Source with Target"
 
     def execute(self, context):
         all_rel_to_abs()
-        props = context.scene.mip_props
+        props = context.scene.mfp_props
         images = get_images()
 
         for img in images:
             img.filepath = img.filepath.replace(props.source, props.target)
         return {'FINISHED'}
 
-class MFPCopy(bpy.types.Operator):
+
+class MFP_OT_Copy(bpy.types.Operator):
     """Tooltip"""  # TODO
     bl_idname = "mfp.copy"
     bl_label = "Copy Source to Target"
 
     def execute(self, context):
         all_rel_to_abs()
-        props = context.scene.mip_props
+        props = context.scene.mfp_props
         images = get_images()
 
         for img in images:
@@ -109,7 +115,8 @@ class MFPCopy(bpy.types.Operator):
                 copyfile (old_path, new_path)
         return {'FINISHED'}
 
-class MFPImagePathsPanel(bpy.types.Panel):
+
+class MFP_PT_ImagePathsPanel(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "File Paths"
     bl_idname = "OBJECT_PT_hello"
@@ -121,7 +128,7 @@ class MFPImagePathsPanel(bpy.types.Panel):
         layout = self.layout
         images = get_images()
         caches = bpy.data.cache_files
-        props = context.scene.mip_props
+        props = context.scene.mfp_props
 
         col = layout.column(align=True)
         col.prop(props, 'source')
@@ -146,15 +153,29 @@ class MFPImagePathsPanel(bpy.types.Panel):
                 row.label(text='', icon=i)
 
 
-def register():
-    bpy.utils.register_module(__name__)
+classes = [
+    MFPProps,
+    MFP_OT_FindReplace,
+    MFP_OT_Copy,
+    MFP_PT_ImagePathsPanel,
+]
 
-    bpy.types.Scene.mip_props = bpy.props.PointerProperty(type=MFPProps)
+
+def register():
+    from bpy.utils import register_class
+    for cls in classes:
+        register_class(cls)
+
+    bpy.types.Scene.mfp_props = bpy.props.PointerProperty(type=MFPProps)
+
 
 def unregister():
-    del bpy.types.Scene.mip_props
+    del bpy.types.Scene.mfp_props
 
-    bpy.utils.unregister_module(__name__)
+    from bpy.utils import unregister_class
+    for cls in reversed(classes):
+        unregister_class(cls)
+
 
 if __name__ == "__main__":
     register()
