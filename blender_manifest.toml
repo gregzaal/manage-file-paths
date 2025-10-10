@@ -1,0 +1,22 @@
+schema_version = "1.0.0"
+
+id = "manage_file_paths"
+version = "1.0.0"
+name = "Manage File Paths"
+tagline = "A simple list of all image file paths with indicators for missing files"
+
+type = "add-on"
+
+# Optional link to documentation, support, source files, etc
+website = "https://github.com/gregzaal/manage-file-paths"
+
+# List defined by Blender and server, see:
+# https://docs.blender.org/manual/en/4.1/extensions/tags.html
+tags = ["Scene", "Pipeline", "System", "Material"]
+
+blender_version_min = "4.2.0"
+# blender_version_max = "5.1.0"
+
+maintainer = "Greg Zaal <gregzaal@gmail.com>"
+license = ["SPDX:GPL-3.0-or-later"]
+copyright = ["2015-2025 Greg Zaal"]
