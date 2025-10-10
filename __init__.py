@@ -42,7 +42,7 @@ TODOs:
 """
 
 
-class MFPProps(bpy.types.PropertyGroup):
+class MFP_Props(bpy.types.PropertyGroup):
     bl_idname = __package__
 
     source: bpy.props.StringProperty(name="Find", default="", description="source")
@@ -207,7 +207,7 @@ class MFP_PT_FindReplace(bpy.types.Panel):
 
 
 classes = [
-    MFPProps,
+    MFP_Props,
     MFP_OT_FindReplace,
     MFP_OT_Find_Variant,
     MFP_PT_ImagePathsPanel,
@@ -221,7 +221,7 @@ def register():
     for cls in classes:
         register_class(cls)
 
-    bpy.types.Scene.mfp_props = bpy.props.PointerProperty(type=MFPProps)
+    bpy.types.Scene.mfp_props = bpy.props.PointerProperty(type=MFP_Props)
 
 
 def unregister():
@@ -231,7 +231,3 @@ def unregister():
 
     for cls in reversed(classes):
         unregister_class(cls)
-
-
-if __name__ == "__main__":
-    register()
