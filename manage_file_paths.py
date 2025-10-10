@@ -31,7 +31,6 @@ bl_info = {
 
 import bpy
 import os
-from shutil import copy2 as copyfile
 
 """
 TODOs:
@@ -117,29 +116,6 @@ class MFP_OT_FindReplace(bpy.types.Operator):
 
         for img in images:
             img.filepath = img.filepath.replace(props.source, props.target)
-        return {"FINISHED"}
-
-
-class MFP_OT_Copy(bpy.types.Operator):
-    """Tooltip"""  # TODO
-
-    bl_idname = "mfp.copy"
-    bl_label = "Copy Source to Target"
-
-    def execute(self, context):
-        all_rel_to_abs(context)
-        props = context.scene.mfp_props
-        images = get_images(context)
-
-        for img in images:
-            old_path = img.filepath
-            if props.source in old_path:
-                new_path = old_path.replace(props.source, props.target)
-                new_path_root = os.sep.join(new_path.split(os.sep)[:-1])
-                if not os.path.exists(new_path_root):
-                    os.makedirs(new_path_root)
-                img.filepath = new_path
-                copyfile(old_path, new_path)
         return {"FINISHED"}
 
 
