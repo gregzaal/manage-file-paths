@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 id = "manage_file_paths"
 version = "1.0.0"
 name = "Manage File Paths"
-tagline = "A simple list of all image file paths with indicators for missing files"
+tagline = "A list of image file paths with indicators for missing files"
 
 type = "add-on"
 
