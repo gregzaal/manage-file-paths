@@ -1,11 +1,9 @@
 # Manage File Paths
 
-A blender add-on thrown together in a hurry that's supposed to help manage... file paths... yep.
+A simple list of all image file paths and cache files with indicators for missing files.
 
-In very early stages still, just has some basic functionality.
+![screenshot](https://u.polyhaven.org/sv2/2025-10-10_14-39-07.png)
 
-Supports images and caches.
+Also includes some shortcuts to related Blender functions, like finding missing files or removing unused datablocks.
 
-## Installation
-
-[Download the .py file](https://raw.githubusercontent.com/gregzaal/manage-file-paths/master/manage_file_paths.py) (right click > Save As) and install it in your Blender preferences.
+Finally, has a simple Find & Replace panel to bulk-adjust all image file paths (e.g. after moving folders).
