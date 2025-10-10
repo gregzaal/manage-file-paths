@@ -16,19 +16,6 @@
 #
 # END GPL LICENSE BLOCK #####
 
-bl_info = {
-    "name": "Manage File Paths",
-    "description": "Lists file paths for images and caches, showing broken paths, and allowing Find & Replace in paths",
-    "author": "Greg Zaal",
-    "version": (0, 4),
-    "blender": (2, 91, 0),
-    "location": "Properties Editor > Scene > File Paths panel",
-    "warning": "",
-    "wiki_url": "https://github.com/gregzaal/manage-file-paths",
-    "tracker_url": "https://github.com/gregzaal/manage-file-paths/issues",
-    "category": "Scene",
-}
-
 import bpy
 import os
 
