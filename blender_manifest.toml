@@ -17,9 +17,9 @@ tags = ["Material", "System"]
 blender_version_min = "4.2.0"
 # blender_version_max = "5.1.0"
 
-[permissions]
-files = "Check if image files exist on disk"
-
 maintainer = "Greg Zaal <gregzaal@gmail.com>"
 license = ["SPDX:GPL-3.0-or-later"]
 copyright = ["2015-2025 Greg Zaal"]
+
+[permissions]
+files = "Check if image files exist on disk"
