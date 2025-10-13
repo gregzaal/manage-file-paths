@@ -30,8 +30,6 @@ TODOs:
 
 
 class MFP_Props(bpy.types.PropertyGroup):
-    bl_idname = __package__
-
     source: bpy.props.StringProperty(name="Find", default="", description="source")
 
     target: bpy.props.StringProperty(name="Replace", default="", description="target")

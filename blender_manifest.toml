@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "manage_file_paths"
-version = "1.0.0"
+version = "1.0.1"
 name = "Manage File Paths"
 tagline = "A list of image file paths with indicators for missing files"
 
@@ -12,10 +12,13 @@ website = "https://github.com/gregzaal/manage-file-paths"
 
 # List defined by Blender and server, see:
 # https://docs.blender.org/manual/en/4.1/extensions/tags.html
-tags = ["Scene", "Pipeline", "System", "Material"]
+tags = ["Material", "System"]
 
 blender_version_min = "4.2.0"
 # blender_version_max = "5.1.0"
+
+[permissions]
+files = "Check if image files exist on disk"
 
 maintainer = "Greg Zaal <gregzaal@gmail.com>"
 license = ["SPDX:GPL-3.0-or-later"]
